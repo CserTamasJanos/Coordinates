@@ -1,7 +1,14 @@
+//#region Canvas data
+var canvasWidth = 400;
+//#endregion
+
+//#region Count data
 var coordinates = [];
 var axisWas = 0;
 var aboveXcounter = 0;
 var quartersPointCounts = [];
+var farAwai = {x: 0, y: 0};
+//#endregion
 
 //#region Count for coordinates
 function rand(min, max)
@@ -24,12 +31,14 @@ function randomCoordinates()
         if(coordinates[i].y > 0){aboveXcounter++}
         QuarterCounts(i);
     }
+    FarAwaiFromOrigo();
+
 }
 
 function QuarterCounts(index)
 {    
     if(coordinates[index].x > 0 && coordinates[index].y > 0){quartersPointCounts[0].count++}
-    else if(coordinates[index].x > 0 && coordinates[index].y < 0){quartersPointCounts[1].count++}
+    else if(coordinates[index].x < 0 && coordinates[index].y > 0){quartersPointCounts[1].count++}
     else if(coordinates[index].x < 0 && coordinates[index].y < 0){quartersPointCounts[2].count++}
     else{quartersPointCounts[3].count++}   
 }
@@ -53,14 +62,8 @@ function FarAwaiFromOrigo()
     {
         if(coordinates[i].distanceFromOrigo > far){far = coordinates[i].distanceFromOrigo; index = i}
     }
-    return `${coordinates[index].x}; ${coordinates[index].y}`;
-}
-
-function QuestionAnswers()
-{
-
-///Lehet hogy nem kell..
-
+    farAwai.x = coordinates[index].x;
+    farAwai.y = coordinates[index].y;
 }
 //#endregion
 
@@ -139,26 +142,77 @@ function CreateButton(id)
     document.getElementById('fullDiv').appendChild(div);
 }
 
+function CreateCanvas()
+{
+    let div = document.createElement('div');
+    div.className = 'center';
+    div.id = 'centerCanvas';
+
+    div.innerHTML = `<canvas width="400" height="400" id="axesAndCoordinates" class="AxesACoord"></canvas>`;
+    document.getElementById('fullDiv').appendChild(div);
+}
+
+function DrawCanvas()
+{
+    let canvas = document.getElementById('axesAndCoordinates');
+    var ctx = canvas.getContext("2d");
+
+    ctx.beginPath();
+    ctx.moveTo(canvasWidth/2, canvasWidth/20);
+    ctx.lineTo(canvasWidth/2, (canvasWidth/20)*19);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(canvasWidth/20, canvasWidth/2);
+    ctx.lineTo((canvasWidth/20)*19, canvasWidth/2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(canvasWidth/2, canvasWidth/2);
+    ctx.lineTo((canvasWidth/2)+(farAwai.x*20), (canvasWidth/2)+(farAwai.y*-20));
+    ctx.strokeStyle = '#ff0000';
+    ctx.stroke();
+}
+
+function PointPlace(x,y)
+{
+    let canvas = document.getElementById('axesAndCoordinates');
+    var ctx = canvas.getContext("2d");
+
+    ctx.beginPath();
+    ctx.arc((canvasWidth/2)+(x*20), (canvasWidth/2)+(y*-20), 2, 0, 2 * Math.PI);
+    ctx.strokeStyle = '#000000';
+    ctx.stroke();
+}
+
+function DrawPoints()
+{
+    for(let i = 0; i < coordinates.length;i++)
+    {
+        PointPlace(coordinates[i].x, coordinates[i].y);
+    }
+}
+
 function CreateAnswerDivs()
 {
     CreateOneDivForFull(false,null,0,'axisHasPoint',`${axisWas >= 1 ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
     CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',`${axisWas === 2 ? "Van" : "Nincs"} mindkét tengelyen pont.`);
     CreateOneDivForFull(false,null,0,'aboveXCount',`A pontok ${((aboveXcounter/18)*100).toFixed(2)} százaléka van az x tengely felett.`);
     CreateOneDivForFull(false,null,0,'firstQuarterCount',`Az első síknegyedben ${quartersPointCounts[0].count} pont található.`);
-    CreateOneDivForFull(false,null,0,'quarterHasTheMostPCount',`A ${QuarterHasTheMostPoints()} negyedben van a legtöbb pont.`);
-    CreateOneDivForFull(false,null,0,'farAwaiFromOrigo',`A ${FarAwaiFromOrigo()} koordinátákkal rendelkező pont van a legmesszebb az origótól.`);
-
+    CreateOneDivForFull(false,null,0,'quarterHasTheMostPCount',`A ${QuarterHasTheMostPoints()} negyedben van a legtöbb pont. (Az első legnagyobb találat)`);
+    CreateOneDivForFull(false,null,0,'farAwaiFromOrigo',`A ${farAwai.x}; ${farAwai.y} koordinátákkal rendelkező pont van a legmesszebb az origótól.`);
 }
 //#endregion
 
 function NewTurn()
-
 {
     CLearFullDiv();
     randomCoordinates();  
-    QuestionAnswers();
     CreateFullDiv();
     CreateH1('mainTitle');
+    CreateCanvas();
+    DrawCanvas();
+    DrawPoints();
     CreateAnswerDivs();
     CreateButton('buttonNewTurn');
 }
