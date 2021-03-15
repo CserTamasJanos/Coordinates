@@ -20,19 +20,25 @@ function randomCoordinates()
 {
     quartersPointCounts = [{quarter: 1, count: 0},{quarter: 2, count: 0},{quarter: 3, count: 0},{quarter: 4, count: 0}];
     coordinates = [];
-    axisWas = 0;
+    axisWas = false;
+    axisWasTwo = false;
     aboveXcounter = 0;
 
     for(let i = 0; i < 18; i++)
     {
         coordinates.push({x: rand(-9,9), y: rand(-9,9), distanceFromOrigo: 0});
         coordinates[i].distanceFromOrigo = Math.sqrt(Math.pow(coordinates[i].x,2) + Math.pow(coordinates[i].y,2));
-        if(axisWas !== 1 && (coordinates[i].x === 0)){axisWas = 1;}else if(axisWas !==2 && coordinates[i].y === 0){axisWas = 2;}
+        PointOnAxis(coordinates[i].x);
+        PointOnAxis(coordinates[i].y);
         if(coordinates[i].y > 0){aboveXcounter++}
         QuarterCounts(i);
     }
     FarAwaiFromOrigo();
+}
 
+function PointOnAxis(axis)
+{
+    if(!axisWasTwo && axis === 0){if(!axisWas){axisWas = true}else{axisWasTwo = true}}
 }
 
 function QuarterCounts(index)
@@ -108,7 +114,7 @@ function CreateOneDivForFull(willBeLoop, givenArray, type, id, resultText)
 
                 if(i === 0)
                 {
-                    results = `<label id="${id}${i}" name="">${resultText}</label></br>`;  
+                    results = `<label id="${id}${i}" name="">${resultText}</label></br>`;  //majd kivenni
                 }
                 results += `<label id="${id}${i}" name="">${data}</label><br>`;
             }
@@ -195,8 +201,8 @@ function DrawPoints()
 
 function CreateAnswerDivs()
 {
-    CreateOneDivForFull(false,null,0,'axisHasPoint',`${axisWas >= 1 ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
-    CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',`${axisWas === 2 ? "Van" : "Nincs"} mindkét tengelyen pont.`);
+    CreateOneDivForFull(false,null,0,'axisHasPoint',`${axisWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
+    CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',`${axisWasTwo ? "Van" : "Nincs"} mindkét tengelyen pont.`);
     CreateOneDivForFull(false,null,0,'aboveXCount',`A pontok ${((aboveXcounter/18)*100).toFixed(2)} százaléka van az x tengely felett.`);
     CreateOneDivForFull(false,null,0,'firstQuarterCount',`Az első síknegyedben ${quartersPointCounts[0].count} pont található.`);
     CreateOneDivForFull(false,null,0,'quarterHasTheMostPCount',`A ${QuarterHasTheMostPoints()} negyedben van a legtöbb pont. (Az első legnagyobb találat)`);
