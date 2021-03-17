@@ -133,8 +133,7 @@ function FindSamePoint()
                 farAwaiPoints.distance = actualPDIstance;}
             if(!origoMirroredPoint){origoMirroredPoint = coordinates[i].x*-1 === coordinates[y].x && coordinates[i].y*-1 === coordinates[y].y}
             if(!axisMirroredPoint){axisMirroredPoint = (coordinates[i].x*-1 === coordinates[y].x && coordinates[i].y === coordinates[y].y) ||
-                (coordinates[i].y*-1 === coordinates[y].y && coordinates[i].x === coordinates[y].x)}
-            
+                (coordinates[i].y*-1 === coordinates[y].y && coordinates[i].x === coordinates[y].x)}         
             y++
             counter++;
         }
@@ -289,8 +288,6 @@ function DrawCanvas()
         ctx.strokeStyle = '#0033cc';
         ctx.stroke();
     }
-
-
 }
 
 function PointPlace(x,y)
@@ -326,8 +323,8 @@ function CreateAnswerDivs()
     CreateOneDivForFull(false,null,0,'farAwatPointDistance',`A legnagyobb ${farAwaiPoints.distance.toFixed(2)} távolság a ${farAwaiPoints.x1}; ${farAwaiPoints.y1} pont és a ${farAwaiPoints.x2};${farAwaiPoints.y2} pont között van.`);
     CreateOneDivForFull(false,null,0,'origoMirroredPiont',`${origoMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei az origóból nézve.`);
     CreateOneDivForFull(false,null,0,'axisMirroredPint',`${axisMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei valamelyik tengelyről nézve.`);
-    CreateOneDivForFull(false, null,0,'biggestAxisDistance', `A tengelyektől a ${biggestAxisDistance.x}; ${biggestAxisDistance.y}  pont van a legtávolabb.`);
-    CreateOneDivForFull(false,null,0,'threPointOnLine',`${threePoints.thereIsAThreePiontLine ? "Van":"Nincs"} Olyanpont amelyen 3 pont is rajta van.`);
+    CreateOneDivForFull(false, null,0,'biggestAxisDistance', `A tengelyektől a ${biggestAxisDistance.x}; ${biggestAxisDistance.y} pont van a legtávolabb.`);
+    CreateOneDivForFull(false,null,0,'threPointOnLine',`${threePoints.thereIsAThreePiontLine ? "Van":"Nincs"} olyan egyenes amelyen 3 pont is rajta van. (Az első találat)`);
 }
 //#endregion
 
