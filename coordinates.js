@@ -203,9 +203,9 @@ function CreateOneDivForFull(willBeLoop, givenArray, type, id, taskNumber, quest
     let pQuestion = document.createElement('p');
     pQuestion.id = `question${id}`;
     pQuestion.className = 'question';
-    if(taskNumber === 6){pQuestion.innerHTML = question + `<span style='color: #ff0000;'>&#8718;</span>`;}
-    else if(taskNumber === 10){pQuestion.innerHTML = question + `<span style='color: #009933;'>&#8718;</span>`;}
-    else if(taskNumber === 13){pQuestion.innerHTML = question + `<span style='color: #0033cc;'>&#8718;</span>`;}
+    if(taskNumber === 6){pQuestion.innerHTML = question + `<span style='color: #ff0000;'> &#8718;</span>`;}
+    else if(taskNumber === 10){pQuestion.innerHTML = question + `<span style='color: #009933;'> &#8718;</span>`;}
+    else if(taskNumber === 13){pQuestion.innerHTML = question + `<span style='color: #0033cc;'> &#8718;</span>`;}
     else{pQuestion.textContent = question;}
 
     let pAnswer = document.createElement('p');
