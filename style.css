@@ -1,41 +1,27 @@
 body{
-    background-color: rgb(242, 242, 242);
-    /*background-image: url("diceIMG2.jpg");*/
-    opacity: 85%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
+    background-color: rgb(255, 255, 255);
 }
 .full{
     max-width: 700px;
     min-width: 440px;
     margin: 0 auto;
-    background-color: rgb(191, 191, 191);
-    box-shadow: 2px 2px 2px 2px rgb(128, 128, 128);
-    padding-bottom: 20px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
 }
-.block{
-    background-color: rgb(230, 230, 230);
-    box-shadow: 2px 2px 2px 2px rgb(128, 128, 128);
-    width: 90%;
-    margin: 0 auto;
-    padding: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-h1{
-    padding-left: 10px;
-    padding-top: 10px;
-    font-size: xx-large;
+h6{
+    border-bottom: 1px solid rgb(76, 204, 89) ;
 }
 p{
-    font-weight: bold;
-    text-align: center;
+    margin: 0;  
 }
-button{
-    background-color: rgb(230, 230, 230);
-    box-shadow: 2px 2px 2px 2px rgb(128, 128, 128);  
-    border: none;
+.question{
+    font-size: small;
+    padding-bottom: 5px;
+}
+.answer{
+    font-size: small;
+    font-weight: bold;
+    padding-bottom: 5px;
 }
 .button.block{
     display: block;
@@ -44,11 +30,13 @@ button{
     text-align: center;
 }
 canvas{
-    border: 1px solid gray;
+    border: 1px solid rgb(255, 255, 255);
     text-align: center;
 }
-/*@media only screen and (min-width: 600px) {
-    body {
-      background-color: lightblue;
-    }
-  }*/
+.expl{
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-size: x-small;
+    border-radius: 5px;
+    width: 120px;
+}

@@ -6,12 +6,12 @@ var canvasWidth = 400;
 var coordinates = [];
 var axisWas = 0;
 var aboveXcounter = 0;
-var quartersPointCounts = [];
-var farAwai = {x: 0, y: 0};
+var quartersPointsCounts = [];
+var farAway = {x: 0, y: 0};
 var biggestAxisDistance = {x: 0, y: 0};
 var avgOrigoDistance = 0;
-var avgPiontsDistance = 0;
-var farAwaiPoints = {x1: 0, y2: 0, x2: 0, y2: 0, distance: 0}
+var avgPointsDistance = 0;
+var farAwayPoints = {x1: 0, y2: 0, x2: 0, y2: 0, distance: 0}
 var origoMirroredPoint = false;
 var axisMirroredPoint = false;
 var threePoints = {thereIsAThreePiontLine: false, x1: 0, y1: 0, x2: 0, y2: 0};
@@ -25,18 +25,18 @@ function rand(min, max)
 
 function randomCoordinates()
 {
-    quartersPointCounts = [{quarter: 1, count: 0},{quarter: 2, count: 0},{quarter: 3, count: 0},{quarter: 4, count: 0}];
+    quartersPointsCounts = [{quarter: 1, count: 0},{quarter: 2, count: 0},{quarter: 3, count: 0},{quarter: 4, count: 0}];
     coordinates = [];
     axisWas = false;
     axisWasTwo = false;
     aboveXcounter = 0;
     var farOrigo = 0;
     var far = 0;
-    farAwai = {x: 0, y: 0}
+    farAway = {x: 0, y: 0}
     biggestAxisDistance = {x: 0, y: 0}
     avgOrigoDistance = 0;
-    avgPiontsDistance = 0;
-    farAwaiPoints.distance = farAwaiPoints.x1 = farAwaiPoints.y1 = farAwaiPoints.x2 = farAwaiPoints.y2 = 0;
+    avgPointsDistance = 0;
+    farAwayPoints.distance = farAwayPoints.x1 = farAwayPoints.y1 = farAwayPoints.x2 = farAwayPoints.y2 = 0;
     origoMirroredPoint = false; 
     axisMirroredPoint = false;
     threePoints.thereIsAThreePiontLine = false;
@@ -50,7 +50,7 @@ function randomCoordinates()
         PointOnAxis(coordinates[i].y);
         if(coordinates[i].y > 0){aboveXcounter++}
         QuarterCounts(i);
-        if(coordinates[i].distanceFromOrigo > farOrigo){farOrigo = coordinates[i].distanceFromOrigo; farAwai.x = coordinates[i].x; farAwai.y = coordinates[i].y;}
+        if(coordinates[i].distanceFromOrigo > farOrigo){farOrigo = coordinates[i].distanceFromOrigo; farAway.x = coordinates[i].x; farAway.y = coordinates[i].y;}
         avgOrigoDistance += coordinates[i].distanceFromOrigo;
         if((Math.abs(coordinates[i].x) > Math.abs(coordinates[i].y) && (Math.abs(coordinates[i].y) > far))){far = Math.abs(coordinates[i].y); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
         else if((Math.abs(coordinates[i].y) > Math.abs(coordinates[i].x) && (Math.abs(coordinates[i].x) > far))){far = Math.abs(coordinates[i].x); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
@@ -59,30 +59,32 @@ function randomCoordinates()
     ThreeLineChecker();
 }
 
-function TwoPointDistance(x1,y1,x2,y2)
+function TwoPointsDistance(x1,y1,x2,y2)
 {
     return Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2))
 }
 
-function ThreePointonALine(x1,y1,x2,y2,x3,y3)
+function ThreePointOnALine(x1,y1,x2,y2,x3,y3)
 {
     if(((y2-y1)*x3) + (((x2-x1)*-1)*y3) === ((y2-y1)*x1) + (((x2-x1)*-1)*y1))//nx = y2-y1;ny = (x2-x1)*-1;normálvektor
     {
-        var dist12 = TwoPointDistance(x1,y1,x2,y2);
-        var dist13 = TwoPointDistance(x1,y1,x3,y3);
-        var dist23 = TwoPointDistance(x2,y2,x3,y3);
+        var dist12 = TwoPointsDistance(x1,y1,x2,y2);
+        var dist13 = TwoPointsDistance(x1,y1,x3,y3);
+        var dist23 = TwoPointsDistance(x2,y2,x3,y3);
 
         threePoints.thereIsAThreePiontLine = true;
-        threePoints.x1 = x1;
-        threePoints.y1 = y1;
 
-        if(dist12 > dist13 && dist12 > dist23)
+        if(dist12 >= dist13 && dist12 >= dist23)
         {
+            threePoints.x1 = x1;
+            threePoints.y1 = y1;
             threePoints.x2 = x2;
             threePoints.y2 = y2;
         }
-        else if(dist13 > dist12 && dist13 > dist23)
+        else if(dist13 > dist12 && dist13 >= dist23)
         {
+            threePoints.x1 = x1;
+            threePoints.y1 = y1;
             threePoints.x2 = x3;
             threePoints.y2 = y3;
         }
@@ -102,12 +104,12 @@ function ThreeLineChecker()
     {
         for(let j = i+2;j <coordinates.length-3;j++)
         {
-            ThreePointonALine(coordinates[i].x,coordinates[i].y,coordinates[i+1].x,coordinates[i+1].y,coordinates[j].x,coordinates[j].y);
-        }
+            ThreePointOnALine(coordinates[i].x,coordinates[i].y,coordinates[i+1].x,coordinates[i+1].y,coordinates[j].x,coordinates[j].y);
 
-        if(threePoints.thereIsAThreePiontLine)
-        {
-            j = i = coordinates.length;
+            if(threePoints.thereIsAThreePiontLine)
+            {
+                j = i = coordinates.length;
+            }
         }
     }
 }
@@ -123,14 +125,14 @@ function FindSamePoint()
         while(y < coordinates.length)
         {
             if(!samePoint){samePoint = coordinates[i].x === coordinates[y].x && coordinates[i].y === coordinates[y].y;}
-            var actualPDIstance = TwoPointDistance(coordinates[i].x,coordinates[i].y,coordinates[y].x,coordinates[y].y);
-            avgPiontsDistance += actualPDIstance;
-            if(actualPDIstance > farAwaiPoints.distance){
-                farAwaiPoints.x1 = coordinates[i].x;
-                farAwaiPoints.y1 = coordinates[i].y;
-                farAwaiPoints.x2 = coordinates[y].x;
-                farAwaiPoints.y2 = coordinates[y].y;
-                farAwaiPoints.distance = actualPDIstance;}
+            var actualPDIstance = TwoPointsDistance(coordinates[i].x,coordinates[i].y,coordinates[y].x,coordinates[y].y);
+            avgPointsDistance += actualPDIstance;
+            if(actualPDIstance > farAwayPoints.distance){
+                farAwayPoints.x1 = coordinates[i].x;
+                farAwayPoints.y1 = coordinates[i].y;
+                farAwayPoints.x2 = coordinates[y].x;
+                farAwayPoints.y2 = coordinates[y].y;
+                farAwayPoints.distance = actualPDIstance;}
             if(!origoMirroredPoint){origoMirroredPoint = coordinates[i].x*-1 === coordinates[y].x && coordinates[i].y*-1 === coordinates[y].y}
             if(!axisMirroredPoint){axisMirroredPoint = (coordinates[i].x*-1 === coordinates[y].x && coordinates[i].y === coordinates[y].y) ||
                 (coordinates[i].y*-1 === coordinates[y].y && coordinates[i].x === coordinates[y].x)}         
@@ -138,7 +140,7 @@ function FindSamePoint()
             counter++;
         }
     }
-    avgPiontsDistance = avgPiontsDistance/counter;
+    avgPointsDistance = avgPointsDistance/counter;
     return samePoint;
 }
 
@@ -149,19 +151,19 @@ function PointOnAxis(axis)
 
 function QuarterCounts(index)
 {    
-    if(coordinates[index].x > 0 && coordinates[index].y > 0){quartersPointCounts[0].count++}
-    else if(coordinates[index].x < 0 && coordinates[index].y > 0){quartersPointCounts[1].count++}
-    else if(coordinates[index].x < 0 && coordinates[index].y < 0){quartersPointCounts[2].count++}
-    else{quartersPointCounts[3].count++}   
+    if(coordinates[index].x > 0 && coordinates[index].y > 0){quartersPointsCounts[0].count++}
+    else if(coordinates[index].x < 0 && coordinates[index].y > 0){quartersPointsCounts[1].count++}
+    else if(coordinates[index].x < 0 && coordinates[index].y < 0){quartersPointsCounts[2].count++}
+    else{quartersPointsCounts[3].count++}   
 }
 
 function QuarterHasTheMostPoints()
 {
     var theMostQ = -1;
     var quarter = -1;
-    for(let i = 0;i < quartersPointCounts.length;i++)
+    for(let i = 0;i < quartersPointsCounts.length;i++)
     {
-        if(quartersPointCounts[i].count > theMostQ){theMostQ = quartersPointCounts[i].count; quarter = quartersPointCounts[i].quarter}
+        if(quartersPointsCounts[i].count > theMostQ){theMostQ = quartersPointsCounts[i].count; quarter = quartersPointsCounts[i].quarter}
     }
     return quarter;
 }
@@ -183,13 +185,34 @@ function CreateFullDiv()
     document.body.appendChild(div);
 }
 
-function CreateOneDivForFull(willBeLoop, givenArray, type, id, resultText)
+function CreateOneDivForFull(willBeLoop, givenArray, type, id, taskNumber, question, resultText)
 {
-    let div = document.createElement('div');
-    div.id = id;
-    div.className = 'block';
+    let divRow = document.createElement('div');
+    divRow.id = `row${id}`;
+    divRow.className = 'row';
+
+    let divCardBody = document.createElement('div');
+    divCardBody.id = `card${id}`;
+    divCardBody.className = 'col-sm-4 mb-2';
+
+    let h6 = document.createElement('h6');
+    h6.className = `h6`;
+    h6.id = `h6${id}`;
+    h6.textContent = "Feladat " + String(taskNumber+1);
+    
+    let pQuestion = document.createElement('p');
+    pQuestion.id = `question${id}`;
+    pQuestion.className = 'question';
+    if(taskNumber === 6){pQuestion.innerHTML = question + `<span style='color: #ff0000;'>&#8718;</span>`;}
+    else if(taskNumber === 10){pQuestion.innerHTML = question + `<span style='color: #009933;'>&#8718;</span>`;}
+    else if(taskNumber === 13){pQuestion.innerHTML = question + `<span style='color: #0033cc;'>&#8718;</span>`;}
+    else{pQuestion.textContent = question;}
+
+    let pAnswer = document.createElement('p');
+    pAnswer.id = `answer${id}`;
+    pAnswer.className = 'answer';
+
     let data = ``;
-    var results = ``;
 
     if(willBeLoop)
     {
@@ -208,29 +231,37 @@ function CreateOneDivForFull(willBeLoop, givenArray, type, id, resultText)
 
                 if(i === 0)
                 {
-                    results = `<label id="${id}${i}" name="">${resultText}</label></br>`;  //majd kivenni
+                    pAnswer.textContent = resultText;
                 }
-                results += `<label id="${id}${i}" name="">${data}</label><br>`;
+                pAnswer.textContent += " " + data + (i === givenArray.length -1 ? "" : " - ");
             }
         }
         else
         {
-            results = `<label id="${id}" name="">Nem volt a kérdésnek megfelelő adat.</label></br>`;
+            pAnswer.textContent = `Nem volt a kérdésnek megfelelő adat.`;
         }
     }
     else
     {
-        results = `<label id=${id} name="">${resultText}</label>`;
+        pAnswer.textContent = resultText;
     }
-    div.innerHTML = results;
-    document.getElementById('fullDiv').appendChild(div);
+
+    if(taskNumber % 3 === 0)
+    {
+        actualDivRow = document.getElementById('fullDiv').appendChild(divRow);
+    }
+
+    document.getElementById(actualDivRow.id).appendChild(divCardBody);
+    document.getElementById(divCardBody.id).appendChild(h6);
+    document.getElementById(divCardBody.id).appendChild(pQuestion);
+    document.getElementById(divCardBody.id).appendChild(pAnswer);
 }
 
-function CreateH1(id)
+function CreateH1(id, text)
 {
     let h1 = document.createElement('h1');
     h1.id = id;
-    h1.innerText = "Koordináták";
+    h1.innerText = text;
     document.getElementById('fullDiv').appendChild(h1);
 }
 
@@ -238,8 +269,44 @@ function CreateButton(id)
 {
     let div = document.createElement('div');
     div.className = 'center';
-    div.innerHTML = `<button id=${id} onclick="NewTurn()">Nyomja meg a gombot az új koordináták generálásához.</button>`;
+    div.innerHTML = `<button id=${id} onclick="NewTurn()" type="button" class="btn btn-primary btn-sm shadow-lg"
+    style="margin-top: 10px;">Nyomja meg a gombot az új dobássorozathoz</button>`;
     document.getElementById('fullDiv').appendChild(div);
+}
+
+function CreateThemeParagraph(id, taskTheme)
+{
+    let paragraph = document.createElement('p');
+    paragraph.id = id;
+    paragraph.className = `p${id}`;
+    paragraph.textContent = taskTheme;
+    paragraph.style="margin-top: 20px; margin-bottom: 10px; font-weight: bold; color: rgb(50, 179, 63)";
+    document.getElementById('fullDiv').appendChild(paragraph);
+}
+
+function CreateNavbar(id)
+{
+    var nav = document.createElement('NAV');
+    nav.id = id;
+    nav.className = 'nav navbar-light';
+    nav.style = 'background-color:rgb(255, 255, 255); border-bottom: 2px solid rgb(5, 61, 196);';
+
+    var a = document.createElement('a');
+    a.id = `a${id}`;
+    a.className = 'navbar-brand';
+    a.href = "#";
+
+    var img = document.createElement('IMG');
+    img.id = `img${id}`;
+    img.src = 'PatrikLogo.JPG';
+    img.className = 'd-inline-block align-top';
+    img.alt = 'logo';
+    img.height = 60;
+    img.width = 200;
+
+    document.getElementById('fullDiv').appendChild(nav);
+    document.getElementById(nav.id).appendChild(a);
+    document.getElementById(a.id).appendChild(img);
 }
 
 function CreateCanvas()
@@ -248,13 +315,13 @@ function CreateCanvas()
     div.className = 'center';
     div.id = 'centerCanvas';
 
-    div.innerHTML = `<canvas width="400" height="400" id="axesAndCoordinates" class="AxesACoord"></canvas>`;
+    div.innerHTML = `<canvas width="400" height="400" id="axisAndCoordinates" class="AxisACoord"></canvas>`;
     document.getElementById('fullDiv').appendChild(div);
 }
 
 function DrawCanvas()
 {
-    let canvas = document.getElementById('axesAndCoordinates');
+    let canvas = document.getElementById('axisAndCoordinates');
     var ctx = canvas.getContext("2d");
 
     ctx.beginPath();
@@ -270,13 +337,13 @@ function DrawCanvas()
 
     ctx.beginPath();
     ctx.moveTo(canvasWidth/2, canvasWidth/2);
-    ctx.lineTo((canvasWidth/2)+(farAwai.x*20), (canvasWidth/2)+(farAwai.y*-20));
+    ctx.lineTo((canvasWidth/2)+(farAway.x*20), (canvasWidth/2)+(farAway.y*-20));
     ctx.strokeStyle = '#ff0000';
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo((canvasWidth/2) + (farAwaiPoints.x1*20), (canvasWidth/2) + (farAwaiPoints.y1*-20));
-    ctx.lineTo((canvasWidth/2)+(farAwaiPoints.x2*20), (canvasWidth/2)+(farAwaiPoints.y2*-20));
+    ctx.moveTo((canvasWidth/2) + (farAwayPoints.x1*20), (canvasWidth/2) + (farAwayPoints.y1*-20));
+    ctx.lineTo((canvasWidth/2)+(farAwayPoints.x2*20), (canvasWidth/2)+(farAwayPoints.y2*-20));
     ctx.strokeStyle = '#009933';
     ctx.stroke();
 
@@ -292,7 +359,7 @@ function DrawCanvas()
 
 function PointPlace(x,y)
 {
-    let canvas = document.getElementById('axesAndCoordinates');
+    let canvas = document.getElementById('axisAndCoordinates');
     var ctx = canvas.getContext("2d");
 
     ctx.beginPath();
@@ -311,20 +378,47 @@ function DrawPoints()
 
 function CreateAnswerDivs()
 {
-    CreateOneDivForFull(false,null,0,'axisHasPoint',`${axisWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
-    CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',`${axisWasTwo ? "Van" : "Nincs"} mindkét tengelyen pont.`);
-    CreateOneDivForFull(false,null,0,'aboveXCount',`A pontok ${((aboveXcounter/18)*100).toFixed(2)} százaléka van az x tengely felett.`);
-    CreateOneDivForFull(false,null,0,'firstQuarterCount',`Az első síknegyedben ${quartersPointCounts[0].count} pont található.`);
-    CreateOneDivForFull(false,null,0,'quarterHasTheMostPCount',`A ${QuarterHasTheMostPoints()} negyedben van a legtöbb pont. (Az első legnagyobb találat)`);
-    CreateOneDivForFull(false,null,0,'avgOrigoDistance',`Az origótól mért átlagos távolság ${(avgOrigoDistance/18).toFixed(2)}`);
-    CreateOneDivForFull(false,null,0,'farAwaiFromOrigo',`A ${farAwai.x}; ${farAwai.y} koordinátákkal rendelkező pont van a legmesszebb az origótól.`);
-    CreateOneDivForFull(false,null,0,'samePintFound', `${FindSamePoint() ? "Van": "Nincs"} olyan két pont aminek a koordinátája ugyan az.`);
-    CreateOneDivForFull(false,null,0,'avgPointDIstance',`A pontok átlagos távolsága: ${avgPiontsDistance.toFixed(2)}`);
-    CreateOneDivForFull(false,null,0,'farAwatPointDistance',`A legnagyobb ${farAwaiPoints.distance.toFixed(2)} távolság a ${farAwaiPoints.x1}; ${farAwaiPoints.y1} pont és a ${farAwaiPoints.x2};${farAwaiPoints.y2} pont között van.`);
-    CreateOneDivForFull(false,null,0,'origoMirroredPiont',`${origoMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei az origóból nézve.`);
-    CreateOneDivForFull(false,null,0,'axisMirroredPint',`${axisMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei valamelyik tengelyről nézve.`);
-    CreateOneDivForFull(false, null,0,'biggestAxisDistance', `A tengelyektől a ${biggestAxisDistance.x}; ${biggestAxisDistance.y} pont van a legtávolabb.`);
-    CreateOneDivForFull(false,null,0,'threPointOnLine',`${threePoints.thereIsAThreePiontLine ? "Van":"Nincs"} olyan egyenes amelyen 3 pont is rajta van. (Az első találat)`);
+    CreateOneDivForFull(false,null,0,'axisHasPoint',0,`Van-e pont valamelyik tengelyen?`,
+    `${axisWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
+
+    CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',1,`Van-e pont mindkét tengelyen?`,
+    `${axisWasTwo ? "Van" : "Nincs"} mindkét tengelyen pont.`);
+
+    CreateOneDivForFull(false,null,0,'aboveXCount',2,`A pontok hány százaléka van az x tengely fölött?`,
+    `A pontok ${((aboveXcounter/18)*100).toFixed(2)} százaléka van az x tengely fölött.`);
+
+    CreateOneDivForFull(false,null,0,'firstQuarterCount',3,`Hány pont van az első síknegyedben?`,
+    `Az első síknegyedben ${quartersPointsCounts[0].count} pont található.`);
+
+    CreateOneDivForFull(false,null,0,'quarterHasTheMostPCount',4,`Melyik síknegyedben van a legtöbb pont?`,
+    `A ${QuarterHasTheMostPoints()} negyedben van a legtöbb pont. (Az első legnagyobb találat)`);
+
+    CreateOneDivForFull(false,null,0,'avgOrigoDistance',5,`Mennyi a pontok origótól mért átlagos távolsága?`,
+    `Az origótól mért átlagos távolság ${(avgOrigoDistance/18).toFixed(2)}`);
+
+    CreateOneDivForFull(false,null,0,'farAwayFromOrigo',6,`Melyik pont van a legmesszebb az origótól?`,
+    `A ${farAway.x}; ${farAway.y} koordinátákkal rendelkező pont van a legmesszebb az origótól.`);
+
+    CreateOneDivForFull(false, null,0,'biggestAxisDistance',7,`Melyik pont van a legmesszebb a koordináta-rendszer tengelyeitől?`,
+    `A tengelyektől a ${biggestAxisDistance.x}; ${biggestAxisDistance.y} pont van a legtávolabb.`);
+
+    CreateOneDivForFull(false,null,0,'samePointFound',8,`Vannak-e egybeeső pontok?`,
+    `${FindSamePoint() ? "Van": "Nincs"} olyan két pont aminek a koordinátája ugyan az.`);
+
+    CreateOneDivForFull(false,null,0,'avgPointDistance',9,`Mekkora az átlagos távolság a pontok között?`,
+    `A pontok átlagos távolsága: ${avgPointsDistance.toFixed(2)}`);
+
+    CreateOneDivForFull(false,null,0,'farAwayPointDistance',10,`Melyik két pont van a legmesszebb egymástól? Mekkora a távolságuk?`,
+    `A legnagyobb ${farAwayPoints.distance.toFixed(2)} távolság a ${farAwayPoints.x1}; ${farAwayPoints.y1} pont és a ${farAwayPoints.x2};${farAwayPoints.y2} pont között van.`);
+
+    CreateOneDivForFull(false,null,0,'origoMirroredPiont',11,`Van-e olyan pontpár, melyek egymás tükörképei az origóból nézve?`,
+    `${origoMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei az origóból nézve.`);
+
+    CreateOneDivForFull(false,null,0,'axisMirroredPint',12,`Van-e olyan pontpár, melyek egymás tükörképei valamely tengelyről nézve?`,
+    `${axisMirroredPoint ? "Van" : "Nincs"} olyan pontpár amelyek egymás tükörképei valamelyik tengelyről nézve.`);
+
+    CreateOneDivForFull(false,null,0,'threPointOnLine',13,`Van-e 3 olyan pont, amik egy egyenesre esnek?`,
+    `${threePoints.thereIsAThreePiontLine ? "Van":"Nincs"} olyan egyenes amelyen 3 pont is rajta van. (Az első találat)`);
 }
 //#endregion
 
@@ -333,7 +427,8 @@ function NewTurn()
     CLearFullDiv();
     randomCoordinates();  
     CreateFullDiv();
-    CreateH1('mainTitle');
+    CreateNavbar('navbar');
+    CreateThemeParagraph('mainText','Ez az oldal 18 koordinátával kapcsolatos számítás eredményeit mutatja');
     CreateCanvas();
     DrawCanvas();
     DrawPoints();
