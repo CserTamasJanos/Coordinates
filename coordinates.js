@@ -4,7 +4,8 @@ var canvasWidth = 400;
 
 //#region Count data
 var coordinates = [];
-var axisWas = 0;
+var axisXWas = false;
+var axisYWas = false;
 var aboveXcounter = 0;
 var quartersPointsCounts = [];
 var farAway = {x: 0, y: 0};
@@ -27,8 +28,8 @@ function randomCoordinates()
 {
     quartersPointsCounts = [{quarter: 1, count: 0},{quarter: 2, count: 0},{quarter: 3, count: 0},{quarter: 4, count: 0}];
     coordinates = [];
-    axisWas = false;
-    axisWasTwo = false;
+    axisXWas = false;
+    axisYWas = false;
     aboveXcounter = 0;
     var farOrigo = 0;
     var far = 0;
@@ -46,14 +47,17 @@ function randomCoordinates()
     {
         coordinates.push({x: rand(-9,9), y: rand(-9,9), distanceFromOrigo: 0});
         coordinates[i].distanceFromOrigo = Math.sqrt(Math.pow(coordinates[i].x,2) + Math.pow(coordinates[i].y,2));
-        PointOnAxis(coordinates[i].x);
-        PointOnAxis(coordinates[i].y);
+
+        if(!axisXWas){PointOnAxis(coordinates[i].x,'x');}
+        if(!axisYWas){PointOnAxis(coordinates[i].y,'y');}
         if(coordinates[i].y > 0){aboveXcounter++}
         QuarterCounts(i);
         if(coordinates[i].distanceFromOrigo > farOrigo){farOrigo = coordinates[i].distanceFromOrigo; farAway.x = coordinates[i].x; farAway.y = coordinates[i].y;}
         avgOrigoDistance += coordinates[i].distanceFromOrigo;
-        if((Math.abs(coordinates[i].x) > Math.abs(coordinates[i].y) && (Math.abs(coordinates[i].y) > far))){far = Math.abs(coordinates[i].y); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
-        else if((Math.abs(coordinates[i].y) > Math.abs(coordinates[i].x) && (Math.abs(coordinates[i].x) > far))){far = Math.abs(coordinates[i].x); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
+        if((Math.abs(coordinates[i].x) > Math.abs(coordinates[i].y) && (Math.abs(coordinates[i].y) > far)))
+        {far = Math.abs(coordinates[i].y); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
+        else if((Math.abs(coordinates[i].y) > Math.abs(coordinates[i].x) && (Math.abs(coordinates[i].x) > far)))
+        {far = Math.abs(coordinates[i].x); biggestAxisDistance.x = coordinates[i].x; biggestAxisDistance.y = coordinates[i].y}
     }
     FindSamePoint();
     ThreeLineChecker();
@@ -144,9 +148,9 @@ function FindSamePoint()
     return samePoint;
 }
 
-function PointOnAxis(axis)
+function PointOnAxis(point, axis)
 {
-    if(!axisWasTwo && axis === 0){if(!axisWas){axisWas = true}else{axisWasTwo = true}}
+    if(point === 0){if(axis === 'x'){axisXWas = true}else{axisYWas = true}}
 }
 
 function QuarterCounts(index)
@@ -379,10 +383,10 @@ function DrawPoints()
 function CreateAnswerDivs()
 {
     CreateOneDivForFull(false,null,0,'axisHasPoint',0,`Van-e pont valamelyik tengelyen?`,
-    `${axisWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
+    `${axisXWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
 
     CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',1,`Van-e pont mindkét tengelyen?`,
-    `${axisWasTwo ? "Van" : "Nincs"} mindkét tengelyen pont.`);
+    `${axisXWas && axisYWas ? "Van" : "Nincs"} mindkét tengelyen pont.`);
 
     CreateOneDivForFull(false,null,0,'aboveXCount',2,`A pontok hány százaléka van az x tengely fölött?`,
     `A pontok ${((aboveXcounter/18)*100).toFixed(2)} százaléka van az x tengely fölött.`);
