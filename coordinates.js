@@ -104,15 +104,18 @@ function ThreePointOnALine(x1,y1,x2,y2,x3,y3)
 
 function ThreeLineChecker()
 {
-    for(let i = 0; i < coordinates.length-2;i++)
+    for(let i = 0; i < coordinates.length; i++)
     {
-        for(let j = i+2;j <coordinates.length-3;j++)
+        for(let j = i+1; j < coordinates.length-1; j++)
         {
-            ThreePointOnALine(coordinates[i].x,coordinates[i].y,coordinates[i+1].x,coordinates[i+1].y,coordinates[j].x,coordinates[j].y);
-
-            if(threePoints.thereIsAThreePiontLine)
+            for(let z = j+1; z < coordinates.length-2; z++)
             {
-                j = i = coordinates.length;
+                ThreePointOnALine(coordinates[i].x,coordinates[i].y,coordinates[j].x,coordinates[j].y,coordinates[z].x,coordinates[z].y);
+
+                if(threePoints.thereIsAThreePiontLine)
+                {
+                    i = j = z = coordinates.length;
+                }
             }
         }
     }
@@ -383,7 +386,7 @@ function DrawPoints()
 function CreateAnswerDivs()
 {
     CreateOneDivForFull(false,null,0,'axisHasPoint',0,`Van-e pont valamelyik tengelyen?`,
-    `${axisXWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
+    `${axisXWas || axisYWas ? "Van" : "Nincs"} olyan pont amelyik rajta van valamelyik tengelyen.`);
 
     CreateOneDivForFull(false,null,0,'bothAxisesHavePoints',1,`Van-e pont mindkét tengelyen?`,
     `${axisXWas && axisYWas ? "Van" : "Nincs"} mindkét tengelyen pont.`);
